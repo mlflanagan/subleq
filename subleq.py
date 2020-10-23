@@ -39,20 +39,6 @@ def subleq(mem: List[int]):
                 pc += 3
 
 
-def test():
-    mem = [
-        -1, 9, 3,  # input into address 9
-        9, -1, 6,  # print from address 9
-        0, 0, -1,  # halt program
-        0, 0, 0  # space for program data
-    ]
-    subleq(mem)
-
-    mem = [
-    ]
-    subleq(mem)
-
-
 def main():
     try:
         filename = sys.argv[1]
@@ -72,5 +58,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # test()
     main()
