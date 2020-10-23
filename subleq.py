@@ -3,6 +3,7 @@
 
 """
 subleq.py - simulate a subleq OISC to execute a subleq program.
+Credit for input/output logic goes to https://rosettacode.org/wiki/Subleq#Python
 mlf 2020-10-20
 
 TODO: input/output
@@ -16,14 +17,40 @@ def subleq(mem: List[int]):
     """ subleq VM """
     pc = 0
     while pc != -1:
+        # load registers with contents of next three memory addresses
         r1 = mem[pc]
         r2 = mem[pc + 1]
         r3 = mem[pc + 2]
-        mem[r2] -= mem[r1]
-        if mem[r2] <= 0:
-            pc = r3
-        else:
+
+        if r1 == -1:
+            # input into memory location pointed to by r2
+            mem[r2] = ord(sys.stdin.read(1)[0])
             pc += 3
+        elif r2 == -1:
+            # output from memory location pointed to by r1
+            print(chr(mem[r1]), end='')
+            pc += 3
+        else:
+            # execute subleq instruction
+            mem[r2] -= mem[r1]
+            if mem[r2] <= 0:
+                pc = r3
+            else:
+                pc += 3
+
+
+def test():
+    mem = [
+        -1, 9, 3,  # input into address 9
+        9, -1, 6,  # print from address 9
+        0, 0, -1,  # halt program
+        0, 0, 0  # space for program data
+    ]
+    subleq(mem)
+
+    mem = [
+    ]
+    subleq(mem)
 
 
 def main():
@@ -31,7 +58,7 @@ def main():
         filename = sys.argv[1]
         with open(filename, 'r') as file:
             mem = file.read().split()
-            # convert to list of ints
+            # convert to list of ints for processing
             subleq([int(i) for i in mem])
     except IndexError:
         basename = sys.argv[0].split("/")[-1]
@@ -45,4 +72,5 @@ def main():
 
 
 if __name__ == '__main__':
+    # test()
     main()
