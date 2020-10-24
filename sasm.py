@@ -3,7 +3,7 @@
 
 """
 sasm.py - assembler for subleq
-Credit for the .word and .string syntax goes to:
+Credit for the .word and .string concept goes to:
     https://techtinkering.com/articles/subleq-a-one-instruction-set-computer/
 mlf 2020-10-23
 """
