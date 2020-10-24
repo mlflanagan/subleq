@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+sasm.py - assembler for subleq
+Credit for the .word and .string syntax goes to:
+    https://techtinkering.com/articles/subleq-a-one-instruction-set-computer/
+mlf 2020-10-23
+"""
+
 import re
 import sys
 from typing import List
@@ -131,7 +138,7 @@ class Assembler:
             elif state == 'GET-STRING-DATA':
                 token = self.get_token()
                 # string must begin and end with double quotes (see regex above)
-                if token[0] not in ["'", '"'] or token[-1] not in ["'", '"']:
+                if token[0] != '"' or token[-1] != '"':
                     raise ValueError("Missing quotes from string")
                 # remove quotes
                 token = token[1:-1]
@@ -154,12 +161,10 @@ class Assembler:
         for statement in program:
             # remove trailing comments, if any
             statement = statement.split(';')[0]
-
             # ignore blank lines and comment lines
             statement = statement.strip()
-            if statement == '' or statement[0] == ';':
+            if statement == '':
                 continue
-
             # parse this statement
             output = self.parse_statement(statement)
             intermediate_output.append(output)
@@ -167,15 +172,14 @@ class Assembler:
         # second pass - replace symbols with memory locations
         self.final_output: List[str] = []
         for statement in intermediate_output:
-            for symbol in statement:
-                if is_int(symbol):
-                    self.final_output.append(symbol)
+            for token in statement:
+                if is_int(token):
+                    self.final_output.append(token)
+                elif token in self.symbol_table:
+                    self.final_output.append(str(self.symbol_table[token]))
                 else:
-                    if symbol in self.symbol_table:
-                        self.final_output.append(str(self.symbol_table[symbol]))
-                    else:
-                        # this should never happen
-                        raise ValueError(f"undefined symbol: {symbol}")
+                    # this should never happen
+                    raise ValueError(f"undefined symbol: {token}")
 
 
 def main():

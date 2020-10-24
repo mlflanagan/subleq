@@ -4,9 +4,16 @@
 """
 subleq.py - simulate a subleq OISC to execute a subleq program.
 Credit for input/output logic goes to https://rosettacode.org/wiki/Subleq#Python
-mlf 2020-10-20
 
-TODO: input/output
+TODO:
+  We don't know the data type of the value to print, assumed string for now.
+  - One solution would be to just print(hex(mem[r1]))
+  - Another solution would be to have the subleq programmer indicate
+    what to print by setting r2 == -1 (.word) or r2 == -2 (.string), e.g:
+    if r2 == -1:
+        print(mem[r1], end='')
+    else: if r2 == -2:
+        print(chr(mem[r1]), end='')
 """
 
 import sys
@@ -27,7 +34,7 @@ def subleq(mem: List[int]):
             mem[r2] = ord(sys.stdin.read(1)[0])
             pc += 3
         elif r2 == -1:
-            # output from memory location pointed to by r1
+            # Output from memory location pointed to by r1.
             print(chr(mem[r1]), end='')
             pc += 3
         else:
@@ -43,9 +50,9 @@ def main():
     try:
         filename = sys.argv[1]
         with open(filename, 'r') as file:
-            mem = file.read().split()
+            program = file.read().split()
             # convert to list of ints for processing
-            subleq([int(i) for i in mem])
+            subleq([int(i) for i in program])
     except IndexError:
         basename = sys.argv[0].split("/")[-1]
         print(f"usage: {basename} filename")
