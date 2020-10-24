@@ -5,7 +5,7 @@
 Unit tests
 
 instruction statement format: [Label:] [subleq] a b [address] [; comment]
-data statement format: label: <.byte byte | .string ascii string> [; comment]
+data statement format: label: <.byte byte | .string asciistring> [; comment]
 
 Example instruction statements
     ; whole line is a comment
